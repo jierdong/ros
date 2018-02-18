@@ -8,7 +8,7 @@ void chatterCallback(const ros_cv::LosePointMsg::ConstPtr& msg)
 {
     ROS_INFO("lose num =  [%d]", msg->num);
     ROS_INFO("lose point1 x =  [%f]", msg->point1.x);
-    ROS_INFO("lose point1 y =  [%f]", msg->point1.y);
+    ROS_INFO("lose point1 y =  [%fd]", msg->point1.y);
 }
 
 int main(int argc, char **argv)

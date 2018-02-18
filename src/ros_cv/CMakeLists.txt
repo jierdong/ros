@@ -49,6 +49,7 @@ add_message_files(FILES
 
 ## Generate services in the 'srv' folder
 add_service_files(FILES
+  AddTwoInts.srv
   LosePointSrv.srv
 )
 
@@ -233,4 +234,21 @@ add_dependencies(loseNumTalker ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPO
 target_link_libraries(loseNumTalker
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+)
+
+add_executable(for_lose_num_server
+  src/for_lose_num_server.cpp
+)
+add_dependencies(for_lose_num_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(for_lose_num_server
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+)
+
+add_executable(for_lose_num_client
+  src/for_lose_num_client.cpp
+)
+add_dependencies(for_lose_num_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(for_lose_num_client
+  ${catkin_LIBRARIES}
 )

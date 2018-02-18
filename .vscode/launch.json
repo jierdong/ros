@@ -7,7 +7,7 @@
 			"request": "launch",
 			"target": "${file}",
 			"cwd": "${workspaceRoot}",
-			"arguments": "0"
+			"arguments": "true"
 		},
 		{
 			"name": "C++ (remote)",

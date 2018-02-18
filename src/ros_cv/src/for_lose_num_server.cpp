@@ -1,17 +1,13 @@
-//-----------------------------------
-//可以实现基本功能，即螺钉松动检测
-//问题：二值化阈值以及范围内像素数量需手动设置
-//-----------------------------------
-#include<opencv2/opencv.hpp>
+#include "ros/ros.h"
+#include "ros_cv/LosePointSrv.h"
+#include "std_msgs/String.h"
+
+#include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "ros_cv/LosePointMsg.h"
 
 using namespace std;
 using namespace cv;
@@ -21,22 +17,17 @@ using namespace cv::xfeatures2d;
 int  hough_circle_detection(Mat, int *);
 int lose_position_find(Mat baseImage, Mat realImage, int circle_center[][2], int *p);    //松动螺钉位置
 
-int main(int argc, char *argv[])
+//service function
+bool getNum(ros_cv::LosePointSrv::Request  &req,
+         ros_cv::LosePointSrv::Response &res)
 {
-    //para init
+    if(req.getpoint == true)
+    {
+        //para init
     int loseNum = 0;            //松动螺钉数量
     int circle_center[10][2];	//中心点的参数
     int *p = circle_center[0];
 
-    // node init
-    ros::init(argc, argv, "losenumtalker");
-
-    ros::NodeHandle n;
-    ros::Publisher chatter_pub = n.advertise<ros_cv::LosePointMsg>("chatter1", 1000);
-    ros::Rate loop_rate(0.5);
-
-    while (ros::ok())
-  {
     //img process
     
     //获得两幅图像
@@ -51,23 +42,35 @@ int main(int argc, char *argv[])
 
 
     //publish 
-    ros_cv::LosePointMsg msg;
-    //std::stringstream ss;                               
-    //ss << "hello world " << count;                          //缓存到ss
-    msg.num = loseNum;
-    msg.point1.x = circle_center[0][0];
-    msg.point1.y = circle_center[0][1];
-    msg.point2.x = circle_center[1][0];
-    msg.point2.y = circle_center[1][1];
-    //initrd.imgmsg.data = ss.str();                                    //赋值
+    res.num = loseNum;
+    res.point1.x = circle_center[0][0];
+    res.point1.y = circle_center[0][1];
+    res.point2.x = circle_center[1][0];
+    res.point2.y = circle_center[1][1];
 
-    //ROS_INFO("%s", msg.data.c_str());
-    chatter_pub.publish(msg);
-    ros::spinOnce();                                        //接受回调函数
-    loop_rate.sleep();                                      //休眠一段时间
-  }
-    return 0;
+    //ROS_INFO("request: x=%ld, y=%ld", (long int)req.a, (long int)req.b);
+    //ROS_INFO("sending back response: [%ld]", (long int)res.sum);
+    }
+    else
+    {
+         ROS_INFO("wrong request");
+    }
+    return true;
 }
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "for_lose_num_server");
+  ros::NodeHandle n;
+
+  ros::ServiceServer service = n.advertiseService("for_lose_num", getNum);
+  ROS_INFO("Ready to get request.");
+  ros::spin();
+
+  return 0;
+}
+
+
 
 //hough圆检测子函数
 int  hough_circle_detection(Mat src, int *p)
