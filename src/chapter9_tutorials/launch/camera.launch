@@ -50,7 +50,7 @@
       <!-- Calibration tool, for a calibration (chessboard) pattern of 8x6 inner squares of 3cm -->
     <node name="cameracalibrator"
           pkg="camera_calibration" type="cameracalibrator.py"
-          args="--size 8x6 --square 0.030" output="screen">
+          args="--size 7x6 --square 0.018" output="screen">
       <remap from="image" to="$(arg camera)/image_raw"/>
       <remap from="camera" to="$(arg camera)"/>
     </node>
